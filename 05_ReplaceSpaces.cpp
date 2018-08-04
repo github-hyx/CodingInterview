@@ -1,0 +1,123 @@
+请实现一个函数，将一个字符串中的每个空格替换成“%20”。
+例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+class Solution
+{
+public:
+    void replaceSpace(char *str,int length)
+    {
+        if(str==nullptr||length<0)
+            return;
+         
+        int originalLength=0;
+        int numberOfBlank=0;
+        int i=0;
+        while(str[i]!='\0')
+        {
+            ++originalLength;
+            if(str[i]==' ')
+                ++numberOfBlank;
+             
+            ++i;
+        }
+         
+        int newLength=originalLength+2*numberOfBlank;
+        if(newLength>length)
+            return;
+        int IndexOfNew=newLength;
+        int IndexOfOriginal=originalLength;
+        while(IndexOfOriginal>=0&&IndexOfNew>IndexOfOriginal)
+        {
+            if(str[IndexOfOriginal]==' ')
+            {
+                str[IndexOfNew--]='0';
+                str[IndexOfNew--]='2';
+                str[IndexOfNew--]='%';
+            }
+            else
+                str[IndexOfNew--]=str[IndexOfOriginal];
+                 
+            --IndexOfOriginal;
+        }
+    }
+};
+
+//////////////////自己的总结
+1.从后往前插入
+
+2.假如这么写的话：
+//////////////////////////////////////////////////////正确的
+        int originalLength = 0;
+        int numberOfBlank = 0;
+        while (str[originalLength] != '\0')
+        {
+            if (str[originalLength] == ' ')
+                ++numberOfBlank;
+ 
+            ++originalLength;
+        }
+////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////错误的
+        int originalLength = 0;
+        int numberOfBlank = 0;
+        while (str[originalLength] != '\0')
+        {
+            ++originalLength;
+            if (str[originalLength] == ' ')
+                ++numberOfBlank；
+        }
+////////////////////////////////////////////////////////////
+  注意++originalLength要放在后边，不然放在前边判断 if (str[originalLength] == ' ')的时候其实已经加了1
+
+
+
+
+//////////////////牛客网参考解析
+//思路
+//1：从前往后插入，这样移动·的次数多不建议
+//2：从后往前插入
+
+class Solution {
+public:
+void replaceSpace(char *str,int length) {
+        //遍历一边字符串找出空格的数量
+        if(str==NULL||length<0)
+            return ;
+        int i=0;
+        int oldnumber=0;//记录以前的长度
+        int replacenumber=0;//记录空格的数量
+        while(str[i]!='\0')
+            {
+               oldnumber++;
+               if(str[i]==' ')
+                   {
+                     replacenumber++;
+                   }
+                  i++; 
+            }
+        int newlength=oldnumber+replacenumber*2;//插入后的长度
+        if(newlength>length)//如果计算后的长度大于总长度就无法插入
+            return ;
+        int pOldlength=oldnumber; //注意不要减一因为隐藏个‘\0’也要算里
+        int pNewlength=newlength;
+        while(pOldlength>=0&&pNewlength>pOldlength)//放字符
+            {
+              if(str[pOldlength]==' ') //碰到空格就替换
+                  {
+                     str[pNewlength--]='0';
+                     str[pNewlength--]='2';
+                     str[pNewlength--]='%';
+                     
+                  }
+               else //不是空格就把pOldlength指向的字符装入pNewlength指向的位置
+               {
+                    str[pNewlength--]=str[pOldlength];
+                   
+               }
+             pOldlength--; //不管是if还是elsr都要把pOldlength前移
+             
+           }
+        
+
+}
+};
