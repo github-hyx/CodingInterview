@@ -18,13 +18,33 @@
 2.value.insert(value.begin(),head->val);
 递归语句，注意在递归函数前后的语句区别
 递归注意return
+递归时注意变量作用域！！！！！！！！！！！！！！！！！！！！！！！！！
+vector<int> value;看value的定义是要放在函数外边public定义，还是放在函数里边定义。
+
+class Solution {
+public:
+    vector<int> ArrayList;
+    vector<int> printListFromTailToHead(ListNode* head){}           
+};
+
+class Solution {
+public:
+    vector<int> printListFromTailToHead(ListNode* head)
+    {
+    vector<int> ArrayList;
+    }           
+};
+
 
 3.堆栈方法关键 push(),top(),pop()
             nodes.push(pNode);
             pNode=nodes.top();
             ArrayList.push_back(pNode->val);
             nodes.pop();
- 
+
+
+
+
             
 //////////////////////////////////////////////////方法1：堆栈
 class Solution 
@@ -53,6 +73,27 @@ public:
 /////////////////////////////////////////////////方法2：递归
 
 //////////////////////////////////////////////////方法2-1   有return ArrayList的递归要注意，可能递归到最后一步就return结束了
+
+
+
+class Solution {
+public:
+    vector<int> ArrayList;
+    vector<int> printListFromTailToHead(ListNode* head)
+    {
+        if (head != nullptr)
+        {
+            if (head->next != nullptr)
+            {
+                printListFromTailToHead(head->next);
+            }
+            ArrayList.push_back(head->val);
+        }
+        return ArrayList;
+    }
+};
+
+
 class Solution {
 public:
     vector<int> ArrayList;
@@ -73,6 +114,7 @@ public:
         return ArrayList;
     }
 };
+
 
 
 ////////////////////////////////////////////////////////////方法2-2 printf打印输出的直接递归
