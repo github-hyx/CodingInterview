@@ -71,7 +71,7 @@ public:
 };
 
 
-////////////////////////////////////////////////////////////方法2-1 printf打印输出的直接递归
+////////////////////////////////////////////////////////////方法2-2 printf打印输出的直接递归
 class Solution {
 void PrintListReversingly_Recursively(ListNode* pHead)
 {
@@ -85,7 +85,33 @@ void PrintListReversingly_Recursively(ListNode* pHead)
         printf("%d\t", pHead->m_nValue);
     }
 }
-
+//////////////////////////////////////////////////////////方法2-3 help2()递归 
+           help2()递归 ArrayList.insert(ArrayList.begin(), head->val);语句放在递归函数前
+           help()递归  ArrayList.push_back(head->val);语句放在递归函数后
+                        
+ class Solution 
+{
+    
+public:
+    vector<int> ArrayList;
+    void help2(ListNode* head)
+    {
+        if (head != nullptr)
+        {
+            ArrayList.insert(ArrayList.begin(), head->val);
+            if (head->next != nullptr)
+            {
+                printListFromTailToHead(head->next);
+            }
+        }
+    }
+    vector<int> printListFromTailToHead(ListNode* head)
+    {
+        
+        help2(head);
+        return ArrayList;
+    }
+};
 /////////////////////////////////////////////////方法3：迭代
 class Solution {
 public:
