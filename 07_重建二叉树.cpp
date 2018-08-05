@@ -43,6 +43,62 @@ public:
         return root;
     }
 };
+////////////////////////////////////////////////////////////////////////下面的解法就是多了注释的抛出异常
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution
+{
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin)
+    {
+        int length = pre.size();
+        int* preorder = pre.data();
+        int* inorder = vin.data();
+        if(preorder==nullptr||inorder==nullptr)
+            return nullptr;
+        return Construct(preorder,preorder+length-1,inorder,inorder+length-1);
+    }
+      
+    TreeNode* Construct(int* startPreorder,int* endPreorder,int* startInorder,int* endInorder)
+    {
+        int rootValue=startPreorder[0];
+        TreeNode* root=new TreeNode(rootValue);
+//        TreeNode* root=new TreeNode();
+//        root->val=rootValue;
+//        root->left=root->right=nullptr;
+//        if(startPreorder==endPreorder)
+//        {
+//            if(startInorder==endInorder&&*startPreorder==*startInorder)
+//                return root；
+//             else
+//                 throw std::exception("Invalid input.");
+//         }
+          
+        int* rootInorder=startInorder;
+        while(rootInorder<=endInorder&&*rootInorder!=rootValue)
+            ++rootInorder;
+//        if(rootInorder==endInorder&&*rootInorder!=rootValue)
+//            throw std::exception("Invalid input.");
+        int leftLength=rootInorder-startInorder;
+        int* leftPreorderEnd=startPreorder+leftLength;
+        if(leftLength>0)
+        {
+            root->left=Construct(startPreorder+1,leftPreorderEnd,startInorder,rootInorder-1);
+        }
+        if(leftLength<endPreorder-startPreorder)
+        {
+            root->right=Construct(leftPreorderEnd+1,endPreorder,rootInorder+1,endInorder);
+        }
+        return root;
+    }
+};
 
 ///////////////////////////////////////////////////////////////总结
 1.方法用递归
