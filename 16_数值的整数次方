@@ -1,0 +1,71 @@
+给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+class Solution 
+{
+public:
+    double Power(double base, int exponent) 
+    {
+        if(base==0.0&&exponent<0)
+            return 0;
+        unsigned int absExponent=(unsigned int)(exponent);
+        if(exponent<0)
+            absExponent=(unsigned int)(-exponent);
+        double result=PowerWithUnsignedExponent(base,absExponent);
+        if(exponent<0)
+            result=1.0/result;
+        return result;
+    }
+        double PowerWithUnsignedExponent(double base,int exponent)
+        {
+            double result=1.0;
+            while(exponent--)
+                result*=base;
+        
+            return result;
+        }
+};
+////////////////////////////////////////////////////////////////////////////
+
+
+第一种方法：累乘，时间复杂度为O(n)
+
+第二种方法：使用递归，时间复杂度O(logn)
+当n为偶数，a^n =（a^n/2）*（a^n/2）
+当n为奇数，a^n = a^[(n-1)/2] * a^[(n-1)/2] * a
+举例：
+2^11 = 2^1 * 2^2 * 2^8
+2^1011 = 2^0001 * 2^0010 * 2^1000
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+class Solution 
+{
+public:
+    double Power(double base, int exponent) 
+    {
+        if(base==0.0&&exponent<0)
+            return 0;
+        unsigned int absExponent=(unsigned int)(exponent);
+        if(exponent<0)
+            absExponent=(unsigned int)(-exponent);
+        double result=PowerWithUnsignedExponent(base,absExponent);
+        if(exponent<0)
+            result=1.0/result;
+        return result;
+    }
+        double PowerWithUnsignedExponent(double base,int exponent)
+        {
+            if(exponent==0)
+                return 1;
+            if(exponent==1)
+                return base;
+            double result=PowerWithUnsignedExponent(base,exponent>>1);
+            result*=result;
+            if(exponent&0x1==1)
+                result*=base;
+            
+            return result;
+        }
+};
+
