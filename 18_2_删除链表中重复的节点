@@ -1,0 +1,147 @@
+在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 
+例如，链表1->2->3->3->4->4->5 处理后为 1->2->5
+/*
+struct ListNode {
+    int val;
+    struct ListNode *next;
+    ListNode(int x) :
+        val(x), next(NULL) {
+    }
+};
+*/
+class Solution 
+{
+public:
+    ListNode* deleteDuplication(ListNode* pHead)
+    {
+        if(pHead==nullptr)
+            return nullptr;
+        ListNode* pPreNode=nullptr;
+        ListNode* pNode=pHead;
+        while(pNode!=nullptr)
+        {
+            ListNode* pNext=pNode->next;
+            bool needDelete=false;
+            if(pNext!=nullptr&&pNode->val==pNext->val)
+                needDelete=true;
+            if(!needDelete)
+            {
+                pPreNode=pNode;
+                pNode=pNode->next;
+            }
+            else
+            {
+                int value=pNode->val;
+                ListNode* pToBeDelete=pNode;
+                while(pToBeDelete!=nullptr&&pNext->val==value)
+                {
+                    pNext=pToBeDelete->next;
+                    
+                    delete pToBeDelete;
+                    pToBeDelete=nullptr;
+                    
+                    pToBeDelete=pNext;
+                }
+                if(pPreNode==nullptr)
+                    pHead=pNext;
+                else
+                    pPreNode->next=pNext;
+                
+                pNode=pNext;
+            }
+        }
+        return pHead;
+    }
+};
+/////////////////////////////////////////////////////////////////////总结
+1.输入参数
+剑指offer上的解析
+解决问题先要确定删除函数的参数买这个函数需要输入待删除函数的参数。头结点可能与后面的节点重复，也就是说头结点也可能被删除，
+因此删除函数应该声明为void deleteDuplication(ListNode** pHead),而不是void deleteDuplication(ListNode* pHead)。
+
+本题给的是ListNode* deleteDuplication(ListNode* pHead){}，因为返回了ListNode*，所以可以接收输入参数为ListNode* pHead。
+
+2.删除节点
+
+                    pNext=pToBeDelete->next;                    
+                    delete pToBeDelete;
+                    pToBeDelete=nullptr;                    
+                    pToBeDelete=pNext;
+                    
+                    也可以将上边删除节点替换为下面，pToBeDelete=pToBeDelete->next；
+                    不过不使用delete可能造成内存泄漏。
+
+
+///////////////////////////////////////////////////////////////////////牛客网参考解析
+/*
+struct ListNode {
+    int val;
+    struct ListNode *next;
+    ListNode(int x) :
+        val(x), next(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    ListNode* deleteDuplication(ListNode* pHead)
+    {
+          if(pHead==NULL||pHead->next==NULL) return pHead;
+          else
+          {
+              //新建一个节点，防止头结点要被删除
+              ListNode* newHead=new ListNode(-1);
+              newHead->next=pHead;
+              ListNode* pre=newHead;
+              ListNode* p=pHead;
+              ListNode* next=NULL;
+              while(p!=NULL && p->next!=NULL)
+              {
+                  next=p->next;
+                  if(p->val==next->val)//如果当前节点的值和下一个节点的值相等
+                  {
+                      while(next!=NULL && next->val==p->val)//向后重复查找
+                          next=next->next;
+                    pre->next=next;//指针赋值，就相当于删除
+                    p=next;
+                  }
+                  else//如果当前节点和下一个节点值不等，则向后移动一位
+                  {
+                      pre=p;
+                      p=p->next;
+                  }
+              }
+           return newHead->next;//返回头结点的下一个节点
+               
+          }
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+递归
+class Solution {
+public:
+    ListNode* deleteDuplication(ListNode* pHead)
+    {
+        if (pHead==NULL)
+            return NULL;
+        if (pHead!=NULL && pHead->next==NULL)
+            return pHead;
+                 
+        ListNode* current;
+         
+        if ( pHead->next->val==pHead->val){
+            current=pHead->next->next;
+            while (current != NULL && current->val==pHead->val)
+                current=current->next;
+            return deleteDuplication(current);                     
+        }
+         
+        else {
+            current=pHead->next;
+            pHead->next=deleteDuplication(current);
+            return pHead;
+        }    
+    }
+};
