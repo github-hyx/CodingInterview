@@ -1,0 +1,154 @@
+给一个链表，若其中包含环，请找出该链表的环的入口结点，否则，输出null。
+/*
+struct ListNode {
+    int val;
+    struct ListNode *next;
+    ListNode(int x) :
+        val(x), next(NULL) {
+    }
+};
+*/
+class Solution 
+{
+public:
+        // 找到环中任意一个节点，如果链表中不存在环，那么函数返回nullptr
+        ListNode* MeetingNode(ListNode* pHead)
+    {
+        if(pHead==nullptr)
+            return nullptr;
+        ListNode* pSlow=pHead->next;
+        if(pSlow==nullptr)
+            return nullptr;
+        ListNode* pFast=pSlow->next;
+        while(pFast!=nullptr&&pSlow!=nullptr)
+        {
+             if(pFast==pSlow)
+                 return pFast;
+            
+            pSlow=pSlow->next;
+            pFast=pFast->next;
+            if(pFast!=nullptr)
+                pFast=pFast->next;
+        }
+        return nullptr;
+    }
+    
+    ListNode* EntryNodeOfLoop(ListNode* pHead)
+    {
+        ListNode* meetingNode=MeetingNode(pHead);
+        if(meetingNode==nullptr)
+            return nullptr;
+        // 得到环中结点的数目
+        int nodesInLoop=1;
+        ListNode* pNode1=meetingNode;
+        while(pNode1->next!=meetingNode)
+        {
+            ++nodesInLoop;
+            pNode1=pNode1->next;
+        }
+        // 先移动pNode1，次数为环中结点的数目
+        pNode1=pHead;
+        ListNode* pNode2=pHead;
+        for(int i=0;i<nodesInLoop;i++)
+            pNode1=pNode1->next;
+        // 再移动pNode1和pNode2
+        while(pNode1!=pNode2)
+        {
+            pNode1=pNode1->next;
+            pNode2=pNode2->next;
+        }
+        return pNode1;
+    }
+
+};
+
+//////////////////////////////////////////////////////////////////////////////////总结
+
+问题解法总结
+1.上面程序的解法
+1）找出环中任意一个节点
+2）得到环中节点的数目
+3）找到环的入口节点
+
+2.断链法
+3.C++ STL中的set
+
+
+/////////////////////////////////////////////////////////////////////////////////牛客网参考解析
+
+///////////////////////////////////////////////////////////////////////////参考解法1
+
+/*
+时间复杂度为O（n），两个指针，一个在前面，另一个紧邻着这个指针，在后面。
+两个指针同时向前移动，每移动一次，前面的指针的next指向NULL。
+也就是说：访问过的节点都断开，最后到达的那个节点一定是尾节点的下一个，
+也就是循环的第一个。
+这时候已经是第二次访问循环的第一节点了，第一次访问的时候我们已经让它指向了NULL，
+所以到这结束。
+*/
+class Solution {
+public:
+    ListNode* EntryNodeOfLoop(ListNode* pHead)
+    {
+        if (!pHead->next)
+            return NULL;
+        ListNode* previous = pHead;
+        ListNode* front = pHead ->next;
+        while (front)
+        {
+            previous->next = NULL;
+            previous = front;
+            front = front->next;
+        }
+        return previous;
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////参考解法2
+//左神讲的
+//先说个定理：两个指针一个fast、一个slow同时从一个链表的头部出发
+//fast一次走2步，slow一次走一步，如果该链表有环，两个指针必然在环内相遇
+//此时只需要把其中的一个指针重新指向链表头部，另一个不变（还在环内），
+//这次两个指针一次走一步，相遇的地方就是入口节点。
+//这个定理可以自己去网上看看证明。
+public class Solution {
+    public ListNode EntryNodeOfLoop(ListNode pHead){
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while(fast != null && fast.next !=null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow)
+                break;
+        }
+        if(fast == null || fast.next == null)
+            return null;
+        fast = pHead;
+        while(fast != slow){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return fast;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////参考解法3
+class Solution {
+public:
+    ListNode* EntryNodeOfLoop(ListNode* pHead)
+    {
+        set<ListNode*> s;
+        ListNode* node = pHead;
+        while(node!=NULL){
+            if(s.insert(node).second)
+                node = node->next;
+            else
+                return node;
+        }
+        return node;
+         
+    }
+};
+
+我这里用到了STL中的set，set有一个特性就是不能插入相同元素，这样只需遍历原List一次就可以判断出有没有环，还有环的入口地址。
+s.insert(node).second这里在插入的同时也判断了插入是否成功，如果不成功表明set中已经有该元素了，该元素就是环的入口元素。
