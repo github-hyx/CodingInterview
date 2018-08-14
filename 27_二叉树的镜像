@@ -1,0 +1,59 @@
+
+/*
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};*/
+class Solution 
+{
+public:
+    void Mirror(TreeNode *pRoot) 
+    {
+        if(pRoot==nullptr)
+            return;
+        if(pRoot->left==nullptr&&pRoot->right==nullptr)
+            return;
+        TreeNode *temp=pRoot->left;
+        pRoot->left=pRoot->right;
+        pRoot->right=temp;
+        if(pRoot->left)
+            Mirror(pRoot->left);
+        if(pRoot->right)
+            Mirror(pRoot->right);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////总结
+
+/* 先前序遍历这棵树的每个结点，如果遍历到的结点有子结点，就交换它的两个子节点，
+当交换完所有的非叶子结点的左右子结点之后，就得到了树的镜像 */
+/**
+
+///////////////////////////////////////////////////////////////////////
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    void Mirror(TreeNode *pRoot) {
+        if(pRoot==NULL){
+            return;
+        }
+        TreeNode *tmp = pRoot->left;
+        pRoot->left = pRoot->right;
+        pRoot->right = tmp;
+        Mirror(pRoot->left);
+        Mirror(pRoot->right);
+    }
+};
