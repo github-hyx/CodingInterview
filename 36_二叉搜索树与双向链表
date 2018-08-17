@@ -1,0 +1,92 @@
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+/*
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};*/
+class Solution 
+{
+public:
+    TreeNode* Convert(TreeNode* pRootOfTree)
+    {
+        TreeNode* pLastNodeInList=nullptr;
+        convertNode(pRootOfTree,&pLastNodeInList);
+        //pLastNodeInList指向双向链表的尾节点
+        //我们需要返回头节点
+        TreeNode* pHeadOfList=pLastNodeInList;
+        while(pHeadOfList!=nullptr&&pHeadOfList->left!=nullptr)
+            pHeadOfList=pHeadOfList->left;
+        return pHeadOfList;
+        
+    } 
+    void convertNode(TreeNode* pNode,TreeNode** pLastNodeInList)
+    {
+        if(pNode==nullptr)
+            return;
+        
+        TreeNode* pCurrent=pNode;
+        if(pCurrent->left)
+            convertNode(pCurrent->left,pLastNodeInList);
+
+        pCurrent->left=*pLastNodeInList;
+        
+        if(*pLastNodeInList!=nullptr)
+            (*pLastNodeInList)->right=pCurrent;
+        
+        *pLastNodeInList=pCurrent;
+        
+        if(pCurrent->right)
+            convertNode(pCurrent->right,pLastNodeInList);
+
+    }
+};
+//////////////////////////////////////////////////////////////////////////////////
+
+1.方法：中序遍历 递归
+把树分成根节点，左子树和右子树，然后把左子树中最大的节点、根节点、右子树中最小的节点链接起来。
+至于如何把左子树和右子树内部的节点链接成链表，递归解决。
+
+2.上面方法用的是传pLastNodeInList地址，下面方法用的是引用，参考解析解答比较简洁。
+
+3. (*pLastNodeInList)->right 注意这种表达要加括号，*pLastNodeInList->right这样写是不对的。
+
+/////////////////////////////////////////////////////////////////////////////////牛客参考解析1
+中序遍历即可。只需要记录一个pre指针即可。
+高分答案也太绕了吧
+ 
+class Solution {
+public:
+    TreeNode* Convert(TreeNode* pRootOfTree)
+    {
+        if(pRootOfTree == nullptr) return nullptr;
+        TreeNode* pre = nullptr;
+         
+        convertHelper(pRootOfTree, pre);
+         
+        TreeNode* res = pRootOfTree;
+        while(res ->left)
+            res = res ->left;
+        return res;
+    }
+     
+    void convertHelper(TreeNode* cur, TreeNode*& pre)
+    {
+        if(cur == nullptr) return;
+         
+        convertHelper(cur ->left, pre);
+         
+        cur ->left = pre;
+        if(pre) pre ->right = cur;
+        pre = cur;
+         
+        convertHelper(cur ->right, pre);
+         
+         
+         
+    }
+};
+
