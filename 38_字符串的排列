@@ -1,0 +1,88 @@
+输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。 
+输入描述:
+输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
+/////////////////////////////////////////////////////////////////////////////////////////////////参考解析1
+
+class Solution {
+public:
+    vector<string> Permutation(string str) {
+        //可以用递归来做
+        vector<string> array;
+        if(str.size()==0)
+            return array;
+        Permutation(array, str, 0);
+        sort(array.begin(), array.end());
+        return array;
+    }
+     
+    void Permutation(vector<string> &array, string str, int begin)//遍历第begin位的所有可能性
+    {
+        if(begin==str.size()-1)
+            array.push_back(str);
+        for(int i=begin; i<=str.size()-1;i++)
+        {
+            if(i!=begin && str[i]==str[begin])//有重复字符时，跳过
+                continue;
+            swap(str[i], str[begin]);//当i==begin时，也要遍历其后面的所有字符；
+                                    //当i!=begin时，先交换，使第begin位取到不同的可能字符，再遍历后面的字符
+            Permutation(array, str, begin+1);//遍历其后面的所有字符；
+             
+            swap(str[i], str[begin]);//为了防止重复的情况，还需要将begin处的元素重新换回来
+             
+            /*举例来说“abca”，为什么使用了两次swap函数
+                交换时是a与b交换，遍历；
+                交换时是a与c交换，遍历；（使用一次swap时，是b与c交换）
+                交换时是a与a不交换；
+                */
+        }
+    }
+};
+/////////////////////////////////////////////////////////////////////////////////////////////////参考解析2
+
+void PermutationHelp(vector<string> &ans, int k, string str) //遍历第k位的所有可能
+{
+    if(k == str.size() - 1)
+        ans.push_back(str);
+    unordered_set<char> us;  //记录出现过的字符
+    sort(str.begin() + k, str.end());  //保证按字典序输出
+    for(int i = k; i < str.size(); i++)
+    {
+        if(us.find(str[i]) == us.end()) //只和没交换过的换
+        {  
+            us.insert(str[i]);
+            swap(str[i], str[k]);
+            PermutationHelp(ans, k + 1, str);
+            swap(str[i], str[k]);  //复位
+        }
+    }
+}
+ 
+vector<string> Permutation(string str) {
+    vector<string> ans;
+    PermutationHelp(ans, 0, str);
+    return ans;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////总结
+1.sort示例用法
+sort(str.begin() + k, str.end());  //保证按字典序输出
+
+2.unordered_set示例用法
+    unordered_set<char> us;  //记录出现过的字符
+    sort(str.begin() + k, str.end());  //保证按字典序输出
+    for(int i = k; i < str.size(); i++)
+    {
+        if(us.find(str[i]) == us.end()) //只和没交换过的换
+
+3. 
+1）
+sort(array.begin(), array.end());
+return array;
+前面的swap复位有没有不一定都可以，保证不和后面出现重复字母交换，还有保证最后返回结果的vector做一次按字典序排序即可。
+
+2）
+最后返回结果的vector不做字典序排序的话，前边处理的时候就需要做字典排序，最好就是sort(str.begin() + k, str.end())，
+即确定当前首位置的字母后，对每次begin后的字符串做字典序排序，然后递归push-back，这样就可保证最后返回结果的vector会符合字典序排序,
+此时swap复位否也无所谓，不影响程序正确性。
+3)总结
+优先选择方法push_back+最后的字典序排序，或者每次begin后的字符串做字典序排序+push_back+swap复位。
