@@ -1,0 +1,103 @@
+输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+//////////////////////////////////////////////////////////////////////////////////////
+class Solution 
+{
+public:
+    string PrintMinNumber(vector<int> numbers) 
+    {
+        string result="";
+        
+        sort(numbers.begin(),numbers.end(),compare);
+        for(int i=0;i<numbers.size();i++)
+        {
+            result+=to_string(numbers[i]);
+        }
+        return result;
+    }
+    static bool compare(int a,int b)
+    {
+        string A=to_string(a)+to_string(b);
+        string B=to_string(b)+to_string(a);
+        return A<B;
+    }
+};                    
+//////////////////////////////////////////////////////////////////////////////////////
+1.sort用法
+　　头文件：#include<algothrim>
+
+　　调用参数：sort(排序首地址，排序末地址，定义排序方式的函数名(可有可无))，如果没有排序方式默认按照升序排列。
+
+　　现在我们就解决一下如何按照降序方式排列。
+
+　　1,对int型数组a[n]降序排：
+
+　　bool cmp (int a, int b)
+　　{
+　　　　return a > b;
+　　}//降序
+
+　　2,对string型的数组a[n]排序：
+
+　　bool cmp (string a, string b)
+　　{
+　　　　return a > b;
+　　}//降序
+
+　　3,对结构体型的数组a[n]排序：
+
+　　bool cmp (node a, node b)
+　　{
+　　　　return a.x > b.x;
+　　}//降序
+
+　　ps：如果对结构体进行二级排序，只需在排序函数里面加上if语句。
+
+　　以上所有的排序函数调用的时候都是用：sort(a, a+n, cmp);
+
+　　其实强大的stl库给我们提供了辣么多的函数，有一些在这里还是很有用的，比如：
+
+　　sort(a, a+n, less<数据类型>());//对指定的数据类型升序排
+
+　　sort(a, a+n, greater<数据类型>());//对指定的数据类型降序排
+
+因为C/C++给我们提供给了太多的数据类型，所以上面只是一些常见的数据类型的排序。
+
+2.sort中比较函数compare返回值为bool，注意compare要是static静态成员函数。
+
+sort中的比较函数compare要声明为静态成员函数或全局函数，不能作为普通成员函数，否则会报错。 
+因为：非静态成员函数是依赖于具体对象的，而std::sort这类函数是全局的，因此无法再sort中调用非静态成员函数。
+静态成员函数或者全局函数是不依赖于具体对象的, 可以独立访问，无须创建任何对象实例就可以访问。同时静态成员函数不可以调用类的非静态成员。
+
+
+//////////////////////////////////////////////////////////////////////////////////////参考解析
+
+
+class Solution {
+public:
+    static bool compare( const string &st1,const string &st2){
+        string s1 = st1+st2;
+        string s2 = st2+st1;
+        return s1<s2;
+    }
+    string PrintMinNumber(vector<int> numbers) {
+         string result;
+        if(numbers.size()<=0){
+            return result;
+        }
+        vector<string> strNum;
+        for(int i=0;i<numbers.size();i++ ){
+           stringstream ss;
+            ss<<numbers[i];
+            string s = ss.str();
+            strNum.push_back(s);
+        }
+        sort(strNum.begin(),strNum.end(),compare);
+        
+        for(int i=0;i<strNum.size();i++){
+            result.append(strNum[i]);
+        }
+        return result;
+         
+    }
+};
