@@ -1,0 +1,229 @@
+请实现两个函数，分别用来序列化和反序列化二叉树
+///////////////////////////////////////////////////////////////////////////牛客参考解析1
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {  
+public:
+    char* Serialize(TreeNode *root) {
+       if(root == NULL)
+           return NULL;
+        string str;
+        Serialize(root, str);
+        char *ret = new char[str.length() + 1];
+        int i;
+        for(i = 0; i < str.length(); i++){
+            ret[i] = str[i];
+        }
+        ret[i] = '\0';
+        return ret;
+    }
+    void Serialize(TreeNode *root, string& str){
+        if(root == NULL){
+            str += '#';
+            return ;
+        }
+        string r = to_string(root->val);
+        str += r;
+        str += ',';
+        Serialize(root->left, str);
+        Serialize(root->right, str);
+    }
+     
+    TreeNode* Deserialize(char *str) {
+        if(str == NULL)
+            return NULL;
+        TreeNode *ret = Deserialize(&str);
+ 
+        return ret;
+    }
+    TreeNode* Deserialize(char **str){//由于递归时，会不断的向后读取字符串
+        if(**str == '#'){  //所以一定要用**str,
+            ++(*str);         //以保证得到递归后指针str指向未被读取的字符
+            return NULL;
+        }
+        int num = 0;
+        while(**str != '\0' && **str != ','){
+            num = num*10 + ((**str) - '0');
+            ++(*str);
+        }
+        TreeNode *root = new TreeNode(num);
+        if(**str == '\0')
+            return root;
+        else
+            (*str)++;
+        root->left = Deserialize(str);
+        root->right = Deserialize(str);
+        return root;
+    }
+};
+//////////////////////////////////////////////////////////////////////////////////////////总结
+自己写的算法还没有调通
+
+//////////////////////////////////////////////////////////////////////////////////////////牛客参考解析2
+typedef TreeNode node;
+typedef TreeNode* pnode;
+typedef int* pint;
+class Solution {
+    vector<int> buf;
+    void dfs(pnode p){
+        if(!p) buf.push_back(0x23333);
+        else{
+            buf.push_back(p -> val);
+            dfs(p -> left);
+            dfs(p -> right);
+        }
+    }
+    pnode dfs2(pint& p){
+        if(*p == 0x23333){
+            ++p;
+            return NULL;
+        }
+        pnode res = new node(*p);
+        ++p;
+        res -> left = dfs2(p);
+        res -> right = dfs2(p);
+        return res;
+    }
+public:
+    char* Serialize(TreeNode *p) {
+        buf.clear();
+        dfs(p);
+        int *res = new int[buf.size()];
+        for(unsigned int i = 0; i < buf.size(); ++i) res[i] = buf[i];
+        return (char*)res;
+    }
+    TreeNode* Deserialize(char *str) {
+        int *p = (int*)str;
+        return dfs2(p);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+思路一：
+
+选用vector<int> arr作为辅助，最后转为int* 和char* 的数据类型，由于‘#’不方便表示，因此用一个不会出现的数0x23333代替。方法上是使用递归的先序遍历。
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    vector<int> arr;
+    void dfs(TreeNode* p) {
+        if(!p) arr.push_back(0x23333);  //0x23333表示一个NULL，最好是用转义字符‘#’表示
+        else {
+            arr.push_back(p->val);
+            dfs(p->left);
+            dfs(p->right);
+        }
+    }
+    TreeNode* dfs2(int** str) {
+        if(**str == 0x23333) {
+            ++*str;
+            return NULL;
+        } else {
+            TreeNode* res = new TreeNode(**str);
+            ++*str;
+            res->left = dfs2(str);
+            res->right = dfs2(str);
+            return res;
+        }
+    }
+    char* Serialize(TreeNode *root) {
+        arr.clear();
+        dfs(root);
+        int* res = new int[arr.size()];
+        for(unsigned int i = 0; i < arr.size(); ++i) res[i] = arr[i];
+        return (char*)res;
+    }
+    TreeNode* Deserialize(char *str) {
+        TreeNode* res;
+        int *p = (int*)str;
+        res = dfs2(&p);
+        return res;
+    }
+    
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+思路二：
+与思路一相同，但整个过程不使用辅助数组，直接用指针实现。由于需要让char*向后移动并改变，因此形参值要设定为char**
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    char* Serialize(TreeNode *root) {
+        if(root == NULL) return NULL;
+        string str;
+        Serialize(root, str);
+        char *res = new char[str.size() + 1];
+        int i;
+        for(i = 0; i < str.size(); ++i) {
+            res[i] = str[i];
+        }
+        res[i] = '\0';
+        return res;
+    }
+    void Serialize(TreeNode *root, string &str) {
+        if(root == NULL) {
+            str += '#';
+            return;
+        }
+        string r = to_string(root->val);  //可以是单个字符‘5’，也可能是字符串‘555’
+        str += r;
+        str += ',';  //用逗号将数字隔开
+        Serialize(root->left, str);
+        Serialize(root->right, str);
+    }
+    
+    
+    TreeNode* Deserialize(char *str) { 
+        if(str == NULL) return NULL;
+        TreeNode* res = Deserialize(&str);
+        return res;
+    }
+    TreeNode* Deserialize(char **str) {
+        //由于递归时，会不断的向后取字符串
+        //因此，形参必须是char**类型，
+        //以保证得到递归后指针str指向未被读取的字符
+        if(**str == '#') {
+            ++(*str);
+            return NULL;
+        }
+        int num = 0;
+        while(**str != '\0' && **str != ',') {
+            num = num*10 + ((**str) - '0');
+            ++(*str);
+        }
+        TreeNode *root = new TreeNode(num);
+        if(**str == '\0') {
+            return root;
+        } else {
+            ++(*str);
+            root->left = Deserialize(str);
+            root->right = Deserialize(str);
+            return root;
+        }
+    }
+};
