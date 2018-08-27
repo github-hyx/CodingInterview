@@ -1,0 +1,65 @@
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+//////////////////////////////////////////////////////////////////////////////////////////////////
+算法思路：后序遍历，从下往上遍历，每个节点只遍历一次，避免重复遍历节点。
+class Solution 
+{
+public:
+    bool IsBalanced_Solution(TreeNode* pRoot) 
+    {
+        if(pRoot==nullptr)
+            return true;
+        
+        int depth=0;
+        return IsBalanced_Solution(pRoot,depth);
+        
+    }
+    bool IsBalanced_Solution(TreeNode* pRoot,int& pDepth)
+    {
+        if(pRoot==nullptr)
+        {
+            pDepth=0;
+            return true;
+        }
+        int left=0;
+        int right=0;
+        if(IsBalanced_Solution(pRoot->left,left)&&IsBalanced_Solution(pRoot->right,right))
+        {
+            int diff=left-right;
+            if(diff==0||diff==-1||diff==1)
+            {
+                pDepth=1+(left>right?left:right);
+                return true;
+            }
+        }
+        return false;
+    }
+};
+//////////////////////////////////////////////////////////////////////////////////////////////////总结
+最直接的做法，遍历每个结点，借助一个获取树深度的递归函数，根据该结点的左右子树高度差判断是否平衡，然后递归地对左右子树进行判断。
+
+这种做法有很明显的问题，在判断上层结点的时候，会多次重复遍历下层结点，增加了不必要的开销。
+如果改为从下往上遍历，如果子树是平衡二叉树，则返回子树的高度；如果发现子树不是平衡二叉树，则直接停止遍历，这样至多只对每个结点访问一次。
+//////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析
+
+public class Solution {
+    //后续遍历时，遍历到一个节点，其左右子树已经遍历  依次自底向上判断，每个节点只需要遍历一次
+     
+    private boolean isBalanced=true;
+    public boolean IsBalanced_Solution(TreeNode root) {
+         
+        getDepth(root);
+        return isBalanced;
+    }
+    public int getDepth(TreeNode root){
+        if(root==null)
+            return 0;
+        int left=getDepth(root.left);
+        int right=getDepth(root.right);
+         
+        if(Math.abs(left-right)>1){
+            isBalanced=false;
+        }
+        return right>left ?right+1:left+1;
+         
+    }
+}
