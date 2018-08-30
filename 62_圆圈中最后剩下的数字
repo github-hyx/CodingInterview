@@ -21,6 +21,10 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////总结
 上面的算法是循环版
+
+//法一：C++实现 list容器+其迭代器实现圆形链表 （约瑟夫环问题）
+//法二：找出规律,通项为：f(n,m)={f(n-1,m)+m}%n。（通过循环或递归实现）
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析1
 递归版
 class Solution {
@@ -33,5 +37,56 @@ public:
             return 0;
         else
             return (LastRemaining_Solution(n-1,m)+m)%n;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析2
+/*
+//法一：C++实现 list容器+其迭代器实现圆形链表 （约瑟夫环问题）
+class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)//n为人数
+    {
+        if(n<1||m<1)
+            return -1;
+        list<int> numbers;
+        for(int i=0;i<n;i++)
+            numbers.push_back(i);
+        list<int>::iterator current=numbers.begin();
+        while(numbers.size()>1)
+        {
+            for(int i=1;i<m;i++)//走m-1步到达第m个数处
+            {
+                ++current;
+                if(current==numbers.end())
+                    current=numbers.begin();
+            }
+             
+            list<int>::iterator next=++current;
+            if(next==numbers.end())
+                next=numbers.begin();
+            --current;
+            numbers.erase(current);
+            current=next;
+        }
+        return *current;//对迭代器取值，等价于对指针取值
+    }
+};
+*/
+//法二：找出规律,通项为：f(n,m)={f(n-1,m)+m}%n。
+class Solution
+{
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if(n<1||m<1)
+            return -1;
+         
+        int last=0;
+        for(int i=2;i<=n;i++)
+        {
+            last=(last+m)%i;
+        }
+        return last;
     }
 };
