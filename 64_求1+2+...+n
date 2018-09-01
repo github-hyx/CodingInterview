@@ -1,0 +1,150 @@
+求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+///////////////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析1
+&&就是逻辑与，逻辑与有个短路特点，前面为假，后面不计算。
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        int ans = n;
+        ans && (ans += Sum_Solution(n - 1));
+        return ans;
+    }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////总结
+class assist{
+public:
+    assist() {N++;sum += N;}
+    static void reset(){N=0;sum=0;}//在VS中不需要此调用函数也可以（不进行多加一次）
+    static unsigned int GetSum(){return sum;}
+private:
+    static int N;
+    static int sum;
+};
+int assist::N = 0;
+int assist::sum = 0;
+//设置一个静态变量N和sum，在构造函数中进行累加运算；
+//然后构造一个以辅助类为类型、大小为n的数组，重复调用此构造函数n次来实现n次的累加运算
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        assist::reset();
+        assist * p = new assist[n];
+        delete []p;
+        p = nullptr;
+        return assist::GetSum();
+    }
+};
+//第二种方法:使用模板函数进行编程，显示定义输入参数为1的模块
+    template <int m> inline int SumTo() { return m + SumTo<m-1>(); }  template <> inline int SumTo<1>() { return 1; }
+//第三种方法：使用虚函数
+ 
+    class Base;
+Base* Array[2];
+class Base{
+public:
+     virtual int Sum(int n){return 0;}
+};
+class Derived : public Base{
+public:
+    virtual int Sum(int n){return Array[!!n]->Sum(n-1) + n;}
+     
+};
+//使用虚函数来构造递归，在基类种定义虚函数Sum(n)返回0，通过将指针数组的两个元素分别绑定到基类和派生类，其中基类的Sum()
+//结束递归，!!n来构造true(1) false(0)来对指针数组进行访问
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        Base a;
+        Derived b;
+        Array[0] = &a;
+        Array[1] = &b;
+        return b.Sum(n);
+    }
+};
+     
+         
+     
+ 
+    //使用短路计算来构造递归:重点是输入0的时候输出0来结束递归
+//缺点：递归的层数不能太深<3000
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        int ret = n;
+        n && (ret += Sum_Solution(n-1)); 
+        return ret;
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析2
+s=n*(n-1)/2用公式是不可以的，公式里有乘法！！实现乘法可以用sizeof多维数组，两行代码就可以
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        bool a[n][n+1];
+        return sizeof(a)>>1;
+    }
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析3
+
+我就猜到大家都是用 && 的短路原则的，这样复杂是O(n)的
+我来一个复杂度 32的，可以说O(logM)吧，M是数值大小，对于int也可以说是O(1)吧虽然常数有点大。
+原理就是，类似快速幂，俗称快速模乘。
+a * b
+可以这样算
+
+res = 0
+while(a){
+    if(a & 1) res += b;
+    a >>= 1;
+    b <<= 1; 
+}
+原理是把a拆成2的幂的和，a = 2^e0 + 2^e1 + 2^e2....
+那么 a * b = (2^e0 + 2^e1 + 2^e2+...) * b = b * 2^e0 + b * 2^e1 + b * 2^e2 + ...
+= (b << e0) + (b << e1) + ....
+
+//奇数返回0xffffffff，否则0
+#define f(x) ((((x) & 1) << 31) >> 31)
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        int a = n, b = n + 1, s = 0;
+        //复制32次。。
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+         
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+         
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+         
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        s += b & f(a); a >>= 1; b <<= 1;
+        return s >> 1;
+    }
+};
+
