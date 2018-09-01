@@ -1,0 +1,105 @@
+将一个字符串转换成一个整数(实现Integer.valueOf(string)的功能，但是string不符合数字要求时返回0)，要求不能使用字符串转换整数的库函数。 
+数值为0或者字符串不是一个合法的数值则返回0。
+///////////////////////////////////////////////////////////////////////////////
+class Solution 
+{
+public:
+    int StrToInt(string str) 
+    {
+        int num=0;
+        int size=str.size();
+        bool minus=false;
+        if(str.empty())
+            return 0;
+            if(str[0]=='+')
+                minus=false;
+            else if(str[0]=='-')
+                minus=true;
+            else if(str[0]>='0'&&str[0]<='9')
+                num=num*10+(str[0]-'0');
+            else 
+                return 0;
+        for(int i=1;i<size;i++)
+        {
+            if(str[i]>='0'&&str[i]<='9')
+                num=num*10+(str[i]-'0');
+            else
+                return 0;
+        }
+        if(minus==true)
+            num=0-num;
+        
+        return num;
+    }
+};
+////////////////////////////////////////////////////////////////////////////////
+最大正整数数值是0x7FFFFFFF(2的31次方减1) ,最小负整数值是0x80000000(-2的31次方)
+32位的int，正数的范围是(0,0x7FFFFFFF),负数(0x80000000,0xFFFFFFFF)
+
+
+////////////////////////////////////////////////////////////////////////////////牛客网参考解析1
+class Solution {
+public:
+    int StrToInt(string str) {
+        int n = str.size(), s = 1;
+        long long res = 0;
+        if(!n) return 0;
+        if(str[0] == '-') s = -1;
+        for(int i = (str[0] ==  '-' || str[0] == '+') ? 1 : 0; i < n; ++i){
+            if(!('0' <= str[i] && str[i] <= '9')) return 0;
+            res = (res << 1) + (res << 3) + (str[i] & 0xf);//res=res*10+str[i]-'0';
+        } 
+        return res * s;
+    }
+};
+////////////////////////////////////////////////////////////////////////////////牛客网参考解析2
+class Solution {
+public:
+    enum Status{kValid = 0,kInvalid};
+    int g_nStatus = kValid;
+     
+    int StrToInt(string str) {
+      g_nStatus = kInvalid;
+        long long num = 0;
+        const char* cstr = str.c_str();
+        if( (cstr != NULL) && (*cstr != '\0') )
+        {
+            int minus = 1;
+            if(*cstr == '-')
+            {
+                minus = -1;
+                cstr++;
+            }
+            else if(*cstr == '+')
+                cstr++;
+             
+            while(*cstr != '\0')
+            {
+                if(*cstr > '0' && *cstr < '9')
+                {
+                    g_nStatus = kValid;
+                    num = num*10 + (*cstr -'0');
+                    cstr++;
+                    if( ((minus>0) && (num > 0x7FFFFFFF)) ||
+                        ((minus<0) && (num > 0x80000000)) )
+                    {
+                        g_nStatus = kInvalid;
+                        num = 0;
+                        break;
+                    }
+                }
+                else
+                {
+                    g_nStatus = kInvalid;
+                    num = 0;
+                    break;
+                }
+            }
+             
+            if(g_nStatus == kValid)
+                num = num * minus;
+             
+        }
+        return (int)num;
+    }
+};
