@@ -179,7 +179,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////////////////牛客网参考解析
 方法一：链表从尾到头输出，利用递归实现，不使用库函数直接printf输出的时候用递归比较好
-（该方法还未理解）这边的return和上边方法1递归的区别？！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+这边的return和上边方法1递归的区别？！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 /**
 *  struct ListNode {
@@ -237,5 +237,67 @@ public:
              
         }
         return value;
+    }
+};reverse
+////////////////////////////////////////////////////////////////////////////////////第二次总结
+第二次做记得递归和reverse
+没有联想到堆栈后入先出
+记一下这个插入用法ArrayList.insert(ArrayList.begin(), head->val);
+方法总结 
+1.递归注意return
+2.循环ArrayList.insert(ArrayList.begin(), head->val)
+3.循环+reverse
+4.堆栈 top push_back pop
+////////////////////////////////////////////////////////////////////////////////////第二次自己写的算法(递归)
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution 
+{
+public:
+    vector<int> vec;
+    vector<int> printListFromTailToHead(ListNode* head) 
+    {
+        if(head==nullptr)
+            return {};
+        ListNode* pNode=head;
+        vec=printListFromTailToHead(pNode->next);
+        vec.push_back(pNode->val);
+        return vec;
+    }
+};
+////////////////////////////////////////////////////////////////////////////////////第二次自己写的算法(循环+reverse)
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution 
+{
+public:
+    vector<int> printListFromTailToHead(ListNode* head) 
+    {
+        vector<int> vec;
+        if(head==nullptr)
+            return vec;
+        
+        ListNode* pNode=head;
+        while(pNode!=nullptr)
+        {
+            vec.push_back(pNode->val);
+            pNode=pNode->next;
+        }
+        reverse(vec.begin(),vec.end());
+        return vec;
     }
 };
