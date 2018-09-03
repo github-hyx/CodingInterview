@@ -2,6 +2,17 @@
 数组中某些数字是重复的，但不知道有几个数字是重复的。
 也不知道每个数字重复几次。请找出数组中任意一个重复的数字。
 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+P39
+////////////////////////////////////////////
+第二次做用sort的方法通过了，参考解析的方法忘了。
+排序方法：n长度的数组时间复杂度O(nlogn)，
+哈希表方法：时间复杂度O(nlogn)，空间复杂度O(n)
+
+参考解析方法：时间复杂度O(n)，空间复杂度O(1)
+1、判断输入数组有无元素非法
+2、从头扫到尾，只要当前元素值与下标不同，就做一次判断,numbers[i]与numbers[numbers[i]]，相等就认为找到了
+重复元素，返回true,否则就交换两者，继续循环。直到最后还没找到认为没找到重复元素，返回false
+
 ///////////////////////////////////////////////////没有考虑nullptr情况，网站也能通过。
 class Solution 
 {
@@ -116,5 +127,58 @@ public:
         }
         return false;
          
+    }
+};
+////////////////////////////////////////////自己写的排序方法
+class Solution
+{
+public:
+    // Parameters:
+    //        numbers:     an array of integers
+    //        length:      the length of array numbers
+    //        duplication: (Output) the duplicated number in the array number
+    // Return value:       true if the input is valid, and there are some duplications in the array number
+    //                     otherwise false
+    bool duplicate(int numbers[], int length, int* duplication)
+    {
+        bool res=false;
+        *duplication=-1;
+        sort(numbers,numbers+length);
+        for(int i=1;i<length;++i)
+        {
+            if(numbers[i]==numbers[i-1])
+            {
+                *duplication=numbers[i];
+                return true;
+            }               
+        }
+        return res;       
+    }
+    ////////////////////////////////////////////自己写的哈希表方法
+    class Solution 
+{
+public:
+    // Parameters:
+    //        numbers:     an array of integers
+    //        length:      the length of array numbers
+    //        duplication: (Output) the duplicated number in the array number
+    // Return value:       true if the input is valid, and there are some duplications in the array number
+    //                     otherwise false
+    bool duplicate(int numbers[], int length, int* duplication) 
+    {
+        bool res=false;
+        *duplication=-1;
+        unordered_map<int, int> hash;
+	    for (int i = 0; i <length; i++) 
+        {
+		    int target=numbers[i];
+		    if (hash.find(target)!= hash.end()) 
+            {
+                *duplication=target;		
+			    return true;
+		    }
+		    hash[numbers[i]] = i;
+	    }
+	    return res;  
     }
 };
