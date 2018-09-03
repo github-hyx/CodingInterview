@@ -243,6 +243,7 @@ public:
 第二次做记得递归和reverse
 没有联想到堆栈后入先出
 记一下这个插入用法ArrayList.insert(ArrayList.begin(), head->val);
+记一下这个翻转用法reverse(vec.begin(),vec.end());
 方法总结 
 1.递归注意return
 2.循环ArrayList.insert(ArrayList.begin(), head->val)
