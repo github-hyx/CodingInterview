@@ -206,3 +206,46 @@ public:
     }
   
 };
+////////////////////////////////////////////////////////////////////////////////////////////第二次总结
+第二次做的时候记得前序序列可以拆分为根左右，中序序列可以拆分为左根右，但是如何递归，如何重建二叉树思路不会。
+上边参考解析的递归思路可以记一下，
+重点在于搞清左右子树在序列里的范围
+////////////////////////////////////////////////////////////////////////////////////////////第二次看了思路后自己写的代码（递归）
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution 
+{
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) 
+    {
+        if(pre.empty()||vin.empty())
+            return nullptr;
+        return ConstrctCore(pre,vin,0,pre.size()-1,0,vin.size()-1);
+    }
+
+    TreeNode* ConstrctCore(vector<int>& pre,vector<int>& vin,int preStart,int preEnd,int vinStart,int vinEnd)
+    {
+        TreeNode* root=new TreeNode(pre[preStart]);
+        if(preStart==preEnd)
+            return root;
+            
+        int vinRoot=vinStart;
+        while(vin[vinRoot]!=pre[preStart]&&vinRoot!=vinEnd)
+            ++vinRoot;
+        
+        int leftLength=vinRoot-vinStart;
+        if(leftLength>0)
+            root->left=ConstrctCore(pre,vin,preStart+1,preStart+leftLength,vinStart,vinRoot-1);
+        if(leftLength<preEnd-preStart)
+            root->right=ConstrctCore(pre,vin,preStart+leftLength+1,preEnd,vinRoot+1,vinEnd);
+            
+        return root;                    
+    }
+};
