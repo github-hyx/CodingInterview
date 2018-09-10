@@ -75,3 +75,45 @@ public:
         return NULL;
     }
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////第二次总结
+方法记得，具体写循环条件的时候改了好几次。
+/////////////////////////////////////////////////////////////////////////////////////////////////第二次自己写的算法
+/*
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+    TreeLinkNode(int x) :val(x), left(NULL), right(NULL), next(NULL) {
+        
+    }
+};
+*/
+class Solution 
+{
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        if(pNode->right)
+        {
+            pNode=pNode->right;
+            while(pNode->left)
+                pNode=pNode->left;
+            
+            return pNode;
+        }
+        
+        else
+        {
+            while(pNode->next)
+            {          
+                if(pNode->next!=nullptr&&pNode->next->left==pNode)
+                    return pNode->next;
+                
+                pNode=pNode->next;
+            }
+        }
+        return nullptr;
+        
+    }
+};
