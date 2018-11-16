@@ -36,7 +36,7 @@ public:
         {
             root->left=Construct(startPreorder+1,leftPreorderEnd,startInorder,rootInorder-1);
         }
-        if(leftLength<endPreorder-startPreorder)
+        if(leftLength<endPreorder-startPreorder)//(rightLength>0)
         {
             root->right=Construct(leftPreorderEnd+1,endPreorder,rootInorder+1,endInorder);
         }
