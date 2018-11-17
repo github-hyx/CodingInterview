@@ -67,5 +67,36 @@ if(head == null || k ==0 ){
         }
          
          
-        return knode;
+        return knode;
 
+/////////////////////////////////////////////////////////////////////////////////////////自己写的基于栈的解法
+class Solution 
+{
+public:
+    ListNode* FindKthToTail(ListNode* pListHead, unsigned int k) 
+    {
+        if(pListHead==nullptr)
+            return nullptr;
+        stack<ListNode*> a;
+        ListNode* pNode=pListHead;
+        ListNode* kNode=nullptr;
+        int count=0;
+        while(pNode!=nullptr)
+        {
+            count++;
+            a.push(pNode);
+            pNode=pNode->next;
+            
+        }
+        if(count<k)
+            return nullptr;
+        
+        for(int i=0;i<k;i++)
+        {
+            kNode=a.top();
+            a.pop();
+        }
+        return kNode;
+    
+    }
+};
