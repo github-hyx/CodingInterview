@@ -1,6 +1,8 @@
 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。
 并将P对1000000007取模的结果输出。 即输出P%1000000007
 ///////////////////////////////////////////////////////////////////////////////////////////////a
+
+思想：归并排序，时间复杂度O(nlogn)，把数字分隔成子数组，统计出子数组内部的逆序对的数目，然后再统计出两个相邻子数组之间的逆序对的数目。
 class Solution 
 {
 public:
@@ -28,8 +30,8 @@ public:
         int length=(end-start)/2;
         long long left=InversePairsCore(copy,data,start,start+length);
         long long right=InversePairsCore(copy,data,start+length+1,end);
-        int i=start+length;
-        int j=end;
+        int i=start+length;//i初始化为前半段最后一个数字的下标
+        int j=end;//j初始化为后半段最后一个数字的下标
         int indexCopy=end;
         long long count=0;
         while(i>=start&&j>=start+length+1)
