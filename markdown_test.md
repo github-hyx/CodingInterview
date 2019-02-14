@@ -52,7 +52,7 @@ fun (x: Int, y: Int): Int {
 }
 ` 
 
-```
+```c++
 fun (x: Int, y: Int): Int {
   return x + y
 }
